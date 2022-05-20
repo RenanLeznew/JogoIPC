@@ -2,7 +2,6 @@
 
 int main(){
     int gameGrid[6][8];
-    int chosenPosition[2];
     int x, y;
 
     //criacao da matriz do jogo
@@ -29,41 +28,50 @@ int main(){
         printf("\n");
     }
     
-    printf("Digite as coordenadas: ");
-    scanf("%d%d", &x, &y);
-    while (x != 5 && y != 0)
-    {
-        for (int row = 0; row < x; row++)
+    printf("Digite as coordenadas: \n");
+    scanf("%d\n%d", &x, &y);
+
+    if(x < 6 && y < 9){
+        while (x != 5 && y != 0)
         {
-            for (int column = y; column < 8; column++)
+            for (int row = 0; row < x; row++)
             {
-                gameGrid[row][column] = 0;
+                for (int column = y; column < 8; column++)
+                {
+                    gameGrid[row][column] = 0;
+                }
+                
+            }
+            
+            for (int row = 0; row < 6; row++)
+            {
+                for (int column = 0; column < 8; column++)
+                {
+                    printf("%d      ", gameGrid[row][column]);
+                }
+                printf("\n");
+            }
+            
+            printf("Insira outros valores de x, y: ");
+            scanf("%d%d", &x, &y);
+            printf("%d\n%d\n", gameGrid[x-1], gameGrid[y+1]);
+            
+            while(gameGrid[x-1] == 0 && gameGrid[y] == 0){
+                printf("Essa coordenada agora eh zero, digite as coordenadas novas: ");
+                scanf("%d%d", &x, &y);
             }
             
         }
-        
-        for (int row = 0; row < 6; row++)
-        {
-            for (int column = 0; column < 8; column++)
-            {
-                printf("%d      ", gameGrid[row][column]);
-            }
-            printf("\n");
-        }
-
-        printf("Digite as coordenadas: ");
-        scanf("%d%d", &x, &y);
     }
+    else
+    {
+        while(x >= 6 && y>=9){
+            printf("Esses valores ultrapassam o tamanho do tabuleiro do jogo, insira outros valores de x, y:\n ");
+            scanf("%d\n%d", &x, &y);
+        }        
+    }
+
     //todo: nao deixar digitar a coordenada que ja esta com zero
 
-    //Usuario escolhe as casas que serao usadas
-    // printf("Digite a casa que deseja selecionar, com a linha primeiro e a coluna depois: "));
-    // scanf("%d", &chosenPosition[0]);
-    // scanf("%d", &chosenPosition[1]);
-    // while (chosenPosition[0] != 5 && chosenPosition[1] != 0){
-    //     printf("Digite a casa que deseja selecionar, com a linha primeiro e a coluna depois: "));
-    //     scanf("%d", &chosenPosition[0]);
-    //     scanf("%d", &chosenPosition[1]);
-    // }
     return 0;
 }
