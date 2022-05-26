@@ -1,4 +1,8 @@
 #include <stdio.h>
+//Integrantes do grupo:
+//Renan Wenzel - 
+//Ana Cláudia Rodrigues- 13696241
+//Laura Ribeiro - 
 
 void checkGreater(int *x, int *y){
     while(*x > 6 || *y > 8){
@@ -14,6 +18,7 @@ void checkGreater(int *x, int *y){
 int main(){
     int gameGrid[6][8];
     int x, y;
+    int play = 1;
 
     //criacao da matriz do jogo
     for (int row = 0; row < 6; row++)
@@ -39,12 +44,18 @@ int main(){
         printf("\n");
     }
     
-    printf("Digite as coordenadas: \n");
+    printf("Jogador 1:\nDigite as coordenadas: \n");
     scanf("%d\n%d", &x, &y);
-
+    play++;
+    
     checkGreater(&x, &y);
         while (x != 6 || y != 0)
-        {
+        {   
+            if(play%2 == 0){
+                printf("Jogador 2:\n");
+            }else{
+                printf("Jogador 1:\n");
+            }
             for (int row = 0; row < x; row++)
             {
                 for (int column = y; column < 9; column++)
@@ -71,12 +82,11 @@ int main(){
                     printf("Os valores digitados devem ser maiores que 1, insira outros valores de x, y: ");
                     scanf("%d\n%d", &x, &y); 
                 }
-                printf("Essa coordenada eh zero, digite as coordenadas novas: ");
+                printf("Essa coordenada ja eh zero, digite as coordenadas novas: ");
                 scanf("%d%d", &x, &y);
             }
+            
+            play++;
         }
-
-    //todo: nao deixar digitar a coordenada que ja esta com zero
-
     return 0;
 }
