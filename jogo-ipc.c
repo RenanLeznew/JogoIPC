@@ -1,26 +1,30 @@
 #include <stdio.h>
+#include <stdlib.h>
 //Integrantes do grupo:
 //Renan Wenzel - 11169472
 //Ana Cl�udia Rodrigues- 13696241
 //Laura Alonso Ribeiro - 11858690
 
-void checkGreater(int *x, int *y){
-    while(*x > 8 || *y > 10){
-        printf("Esses valores ultrapassam o tamanho do tabuleiro do jogo, insira outros valores de x, y: ");
-        scanf("%d\n%d", &*x, &*y);
+//funcao para alocar e criar a matriz
+int **allocateMatrix(int numberRows, int numberColumns){
+    int **matrix;
+
+    matrix = (int**)malloc(sizeof(int*)*numberRows);
+    if(matrix==NULL){   
+        return NULL; 
     }
-    while(*x < 1 || *y < 1){
-       printf("Os valores digitados devem ser maiores que 1, insira outros valores de x, y: ");
-        scanf("%d\n%d", &*x, &*y);
+
+    for(int addColumns=0; addColumns<numberRows; addColumns++){
+        matrix[addColumns]=(int*)malloc(sizeof(int)*numberRows);
+        if(matrix[addColumns]==NULL){  
+            return NULL;
+        }
     }
+
+    return matrix;
 }
 
-int main(){
-    int gameGrid[8][10];
-    int x, y, winner;
-    int play = 1;
-
-    //criacao da matriz do jogo
+int **createMatrix(int **gameGrid, int columns, int rows){
     for (int row = 0; row < 8; row++)
     {
         for (int column = 0; column < 10; column++)
@@ -34,69 +38,97 @@ int main(){
         }
     }
 
-    //printa a matriz
+}
+
+//funcao para exibir a matriz
+void printMatrix(int **gameGrid){
     for (int row = 0; row < 8; row++)
     {
         for (int column = 0; column < 10; column++)
         {
             printf("%d      ", gameGrid[row][column]);
         }
-        printf("\n");
+        printf("\n\n");
     }
+}
 
+//funcao para conferir se esta dentro dos limites do tabuleiro
+void checkGreater(int *x, int *y){
+    while(*x > 8 || *y > 10){
+        printf("Esses valores ultrapassam o tamanho do tabuleiro do jogo, insira outros valores de x, y: ");
+        scanf("%d\n%d", &*x, &*y);
+    }
+    while(*x < 1 || *y < 1){
+       printf("Os valores digitados devem ser maiores que 1, insira outros valores de x, y: ");
+        scanf("%d\n%d", &*x, &*y);
+    }
+}
+
+void playerVsPlayer(int **gameGrid, int x, int y){
+    int play = 1;
+    int winner;
+
+    printMatrix(gameGrid);
+    
     printf("Jogador 1:\nDigite as coordenadas: \n");
-    scanf("%d\n%d", &x, &y);
+    scanf("\n%d\n%d", &x, &y);
+    printf("Beep Bop! Removendo as coordenadas: (%d, %d)\n", x, y);
     play++;
 
     checkGreater(&x, &y);
-        while (x != 8 || y != 1)
+    while (x != 8 || y != 1)
+    {
+        if(play%2 == 0){
+            printf("Jogador 2:\n");
+            winner = 1;
+        }else{
+            printf("Jogador 1:\n");
+            winner = 2;
+        }
+        for (int row = 0; row < x; row++)
         {
-            if(play%2 == 0){
-                printf("Jogador 2:\n");
-                winner = 1;
-            }else{
-                printf("Jogador 1:\n");
-                winner = 2;
-            }
-            for (int row = 0; row < x; row++)
+            for (int column = y; column < 11; column++)
             {
-                for (int column = y; column < 11; column++)
-                {
-                    gameGrid[row][column-1] = 0;
-                }
-
+                gameGrid[row][column-1] = 0;
             }
 
-            for (int row = 0; row < 8; row++)
-            {
-                for (int column = 0; column < 10; column++)
-                {
-                    printf("%d      ", gameGrid[row][column]);
-                }
-                printf("\n");
-            }
+        }
 
-            printf("Insira outros valores de x, y: ");
+        printMatrix(gameGrid);
+
+        printf("Insira outros valores de x, y: ");
+        scanf("%d%d", &x, &y);
+        checkGreater(&x, &y);
+        while(gameGrid[x-1][y-1] == 0){
+            while(x < 1 || y < 1){
+                printf("Os valores digitados devem ser maiores que 1, insira outros valores de x, y: ");
+                scanf("\n%d\n%d", &x, &y);
+            }
+            printf("Essa coordenada ja eh zero, digite as coordenadas novas: ");
             scanf("%d%d", &x, &y);
-            checkGreater(&x, &y);
-            while(gameGrid[x-1][y-1] == 0){
-                while(x < 1 || y < 1){
-                    printf("Os valores digitados devem ser maiores que 1, insira outros valores de x, y: ");
-                    scanf("%d\n%d", &x, &y);
-                }
-                printf("Essa coordenada ja eh zero, digite as coordenadas novas: ");
-                scanf("%d%d", &x, &y);
-            }
+        }
+        printf("Beep Bop! Removendo as coordenadas: (%d, %d)\n", x, y);    
+        play++;
+    }
+    if (winner == 1)
+    {
+        printf("Jogador 2 encontrou a pimentinha, Jogador 1 eh o vencedor.");
+    }
+    else{
+        printf("Jogador 1 encontrou a pimentinha, Jogador 2 eh o vencedor");
+    }    
+}
 
-            play++;
-        }
-        if (winner == 1)
-        {
-            printf("Jogador 2 encontrou a pimentinha, Jogador 1 eh o vencedor.");
-        }
-        else{
-            printf("Jogador 1 encontrou a pimentinha, Jogador 2 eh o vencedor");
-        }
-        
+int main(){
+    int **gameGrid;
+    int x, y;
+
+    gameGrid = allocateMatrix(8, 10);
+
+    createMatrix(gameGrid, 8, 10);
+    
+    //printa a matriz        
+    playerVsPlayer(gameGrid, x, y);
+          
     return 0;
 }
