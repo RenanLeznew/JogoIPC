@@ -64,6 +64,17 @@ void checkGreater(int *x, int *y){
     }
 }
 
+void removeCoordinate(int **gameGrid, int x, int y){
+    for (int row = 0; row < x; row++)
+    {
+        for (int column = y; column < 11; column++)
+        {
+            gameGrid[row][column-1] = 0;
+        }
+
+    }    
+}
+
 void playerVsPlayer(int **gameGrid, int x, int y){
     int play = 1;
     int winner;
@@ -85,14 +96,7 @@ void playerVsPlayer(int **gameGrid, int x, int y){
             printf("Jogador 1:\n");
             winner = 2;
         }
-        for (int row = 0; row < x; row++)
-        {
-            for (int column = y; column < 11; column++)
-            {
-                gameGrid[row][column-1] = 0;
-            }
-
-        }
+        removeCoordinate(gameGrid, x, y);
 
         printMatrix(gameGrid);
 
@@ -119,16 +123,76 @@ void playerVsPlayer(int **gameGrid, int x, int y){
     }    
 }
 
+void playerVsComputer(int **gameGrid, int x, int y){
+    int play = 1;
+    int winner;
+    
+    x = 1;
+    y = 10;
+    printf("O computador removeu as coordenadas: (%d, %d)\n", x, y);
+    removeCoordinate(gameGrid, x, y);
+    printMatrix(gameGrid);
+
+    checkGreater(&x, &y);
+    while (x != 8 || y != 1)
+    {
+        if(play%2 == 1){
+            printf("Jogador 1:\n");
+            removeCoordinate(gameGrid, x, y);
+
+            printMatrix(gameGrid);
+
+            printf("Insira outros valores de x, y: ");
+            scanf("%d%d", &x, &y);
+            checkGreater(&x, &y);
+            while(gameGrid[x-1][y-1] == 0){
+                while(x < 1 || y < 1){
+                    printf("Os valores digitados devem ser maiores que 1, insira outros valores de x, y: ");
+                    scanf("\n%d\n%d", &x, &y);
+                }
+                printf("Essa coordenada ja eh zero, digite as coordenadas novas: ");
+                scanf("%d%d", &x, &y);
+            }
+            printf("Beep Bop! Removendo as coordenadas: (%d, %d)\n", x, y);    
+            play++;
+        }
+        else{
+            x = 1;
+            y = 10;
+            printf("O computador removeu as coordenadas: (%d, %d)\n", x, y);
+            removeCoordinate(gameGrid, x, y);
+            printMatrix(gameGrid);
+        }
+    }
+    if (winner == 1)
+    {
+        printf("Jogador 2 encontrou a pimentinha, Jogador 1 eh o vencedor.");
+    }
+    else{
+        printf("Jogador 1 encontrou a pimentinha, Jogador 2 eh o vencedor");
+    }    
+}
+
 int main(){
     int **gameGrid;
     int x, y;
+    char gameMode[1];
 
     gameGrid = allocateMatrix(8, 10);
 
     createMatrix(gameGrid, 8, 10);
     
+    printf("Digite P para ir contra player ou C para ir contra computador: ");
+    scanf("%c", &gameMode);
     //printa a matriz        
-    playerVsPlayer(gameGrid, x, y);
-          
+    if (gameMode[0] == 'P'){
+        printf("Voce escolheu ir contra player!\n");
+        playerVsPlayer(gameGrid, x, y);
+    }
+    else{
+        printf("Voce escolheu ir contra computador!\n");
+        playerVsComputer(gameGrid, x, y);
+    } 
+
     return 0;
 }
